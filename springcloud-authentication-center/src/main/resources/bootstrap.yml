@@ -1,0 +1,13 @@
+server:
+  port: 31000
+spring:
+  application:
+    name: springcloud-authentication-center
+  cloud:
+    nacos:
+      discovery:
+#        server-addr: localhost:8848
+        server-addr: 192.168.199.128:7890
+      config:
+#        server-addr: localhost:8848
+        server-addr: 192.168.199.128:7890

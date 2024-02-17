@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhifei.cloud.dao.SysRoleMapper">
+    <sql id="roleColumns">
+        sr.role_id, sr.name, sr.level, sr.description, sr.data_scope, sr.create_by, sr.update_by, sr.create_time, sr.update_time
+    </sql>
+    <resultMap id="baseRoleResultMap" type="sysRole">
+        <id property="roleId" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="level" column="level"/>
+        <result property="description" column="description"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="roleList">
+        SELECT <include refid="roleColumns"/>
+        from sys_role sr, sys_user su, sys_users_roles sur
+        WHERE sr.role_id = sur.role_id AND su.user_id = sur.user_id AND
+    </sql>
+    <select id="getRolesByUserId" resultMap="baseRoleResultMap">
+        <include refid="roleList"/> su.user_id = #{userId}
+    </select>
+    <select id="getRolesByUsername" resultMap="baseRoleResultMap">
+        <include refid="roleList"/> su.username = #{username}
+    </select>
+    <select id="selectRoleIdsByUsername" resultType="long" parameterType="string">
+        SELECT sur.role_id FROM sys_users_roles sur INNER JOIN sys_user su ON sur.user_id = su.user_id WHERE su.username = #{username}
+    </select>
+</mapper>

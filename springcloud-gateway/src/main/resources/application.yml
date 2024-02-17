@@ -1,0 +1,46 @@
+server:
+  port: 30000
+spring:
+  application:
+    name: springcloud-gateway
+  cloud:
+    nacos:
+      discovery:
+#        server-addr: localhost:8848
+        server-addr: 192.168.199.128:7890
+#      config:
+#        server-addr: 192.168.199.128:7890
+    gateway:
+      discovery:
+        locator:
+          enabled: true   #开启从服务注册中心动态创建路由功能，利用服务名称路由
+      routes:
+        - id: springcloud_authentication_center      #路由id，必须唯一，建议配合服务名
+          #          uri: http://localhost:31000        #转发的地址
+          uri: lb://springcloud-authentication-center
+          predicates:
+            - Path=/auth/**    #断言，路径相匹配的进行路由，http://localhost:30000/auth/testGateway    路由到-->    http://localhost:31000/auth/testGateway
+        - id: springcloud_order      #路由id，必须唯一，建议配合服务名
+          #          uri: http://localhost:32000        #转发的地址
+          uri: lb://springcloud-order
+          predicates:
+            - Path=/order/**, /sentinel/**    #断言，路径相匹配的进行路由，http://localhost:30000/order/testGateway    路由到-->    http://localhost:32000/order/testGateway
+        - id: springcloud_storage
+          #          uri: http://localhost:33000
+          uri: lb://springcloud-storage
+          predicates: #详情配置https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.3.RELEASE/reference/html/#the-after-route-predicate-factory
+            - Path=/storage/**         #Path Route Predicate Factory    http://localhost:30000/storage/testGateway 路由到--> http://localhost:33000/storage/testGateway
+  #            - After=2020-07-14T02:37:11.921+08:00[Asia/Shanghai]           #After Route Predicate Factory  使用的是ZonedDateTime，表示这个时间点之后才起作用
+  #            - Before=2017-01-20T17:42:47.789-07:00[America/Denver]         #Before Route Predicate Factory  在这个时间点前才起作用
+  #            - Between=2017-01-20T17:42:47.789-07:00[America/Denver], 2017-01-21T17:42:47.789-07:00[America/Denver]        #Between Route Predicate Factory  在这两个时间点之间才起作用
+  #            - Cookie=color, white           #Cookie Route Predicate Factory，key-->value形式，value是正则表达式
+  #            - Header=X-Request-Id, \d+          #Header Route Predicate Factory   ，key-->value形式，value是正则表达式
+  #            - Host=**.server.name           #Host Route Predicate Factory, 主机名为**.server.name访问才行，请求的Host、Cookie、Header均是放在一个请求的请求头
+  #            - Method=GET,POST       #Method Route Predicate Factory，指定请求方法
+  #            - Query=age, 12     #Query Route Predicate Factory, 如果有两个值用逗号隔开，那么是key-value（正则），如果只有一个，那么是指请求只需包含这样名称的请求参数
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

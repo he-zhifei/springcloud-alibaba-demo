@@ -1,0 +1,86 @@
+server:
+  port: 32000
+spring:
+  application:
+    name: springcloud-order
+  cloud:
+    nacos:
+      discovery:
+#        server-addr: localhost:8848
+        server-addr: 192.168.199.128:7890
+      # nacos配置中心配置，默认配置格式：${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      config:
+#        server-addr: localhost:8848
+        server-addr: 192.168.199.128:7890
+        file-extension: yaml
+        # 配置分组，默认：DEFAULT_GROUP
+        group: DEV_GROUP
+        # 命名空间：通过 namespace、group、dataId确定哪个配置文件会被读取
+        namespace: 667155bc-c761-4198-9f95-c4521b128a39
+    sentinel:
+#      在yml配置文件中配置限流规则
+#      transport:
+#        port: 8719
+#        dashboard: localhost:8080
+# sentinel持久化配置push模式，需要分别在nacos先创建指定dataId、groupId的配置文件，并指定格式为dataType（json），示例：
+#      [
+#        {
+#          "resource": "test1",
+#          "limitApp": "default",
+#          "grade": 1,
+#          "count": 5
+#        }
+#      ]
+
+#      通过sentinel dashboard把限流规则持久化到nacos(push模式)
+      transport:
+        dashboard: localhost:8080
+      datasource:
+        # 名称随意
+        flow:
+          nacos:
+#            serverAddr: localhost:8848
+            serverAddr: 192.168.199.128:7890
+            dataId: ${spring.application.name}-flow-rules
+            groupId: SENTINEL_GROUP
+            # 规则类型，取值见：
+            # org.springframework.cloud.alibaba.sentinel.datasource.RuleType
+            ruleType: flow
+            dataType: json
+        degrade:
+          nacos:
+#            serverAddr: localhost:8848
+            serverAddr: 192.168.199.128:7890
+            dataId: ${spring.application.name}-degrade-rules
+            groupId: SENTINEL_GROUP
+            ruleType: degrade
+            dataType: json
+        system:
+          nacos:
+#            serverAddr: localhost:8848
+            serverAddr: 192.168.199.128:7890
+            dataId: ${spring.application.name}-system-rules
+            groupId: SENTINEL_GROUP
+            ruleType: system
+            dataType: json
+        authority:
+          nacos:
+#            serverAddr: localhost:8848
+            serverAddr: 192.168.199.128:7890
+            dataId: ${spring.application.name}-authority-rules
+            groupId: SENTINEL_GROUP
+            ruleType: authority
+            dataType: json
+        param-flow:
+          nacos:
+#            serverAddr: localhost:8848
+            serverAddr: 192.168.199.128:7890
+            dataId: ${spring.application.name}-param-flow-rules
+            groupId: SENTINEL_GROUP
+            ruleType: param-flow
+            dataType: json
+
+# 是否开启@SentinelRestTemplate注解
+resttemplate:
+  sentinel:
+    enabled: true
